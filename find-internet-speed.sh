@@ -18,3 +18,7 @@ timestamp #print timestamp
 #run python script
 echo running python script
 /usr/local/bin/python3.12 script.py
+
+#Add final timestamp
+timestamp #print timestamp
+echo finished
