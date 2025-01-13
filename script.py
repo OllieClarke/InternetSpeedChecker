@@ -1,16 +1,10 @@
 from dotenv import load_dotenv
 import os
 import speedtest
-import time
+import snowflake.connector
+import datetime
 
-#Get starttime
-start_time = time.time()
-
-#Pull in username and password from secrets
-load_dotenv()
-username = os.getenv("USER_NAME")
-password = os.getenv("PASSWORD")
-
+#Use speedtest-cli to find information
 try:
     #Using Speedtest to find my upload, download and ping
     #setup speedtest using https
@@ -23,15 +17,50 @@ try:
     download_speed = st.download()
     upload_speed = st.upload()
     ping = st.results.ping
-    timestamp = time.time()
+    timestamp = datetime.datetime.now()
 
     # build json string
     output = '{"Download": '+str(download_speed)+', "Upload": '+str(upload_speed)+', "Ping": '+str(ping)+', "Timestamp": '+str(timestamp)+'}'
 
 except:
     #If it fails then make a null json, but with a timestamp
-    timestamp = time.time()
-
+    timestamp = datetime.datetime.now()
     output= '{"Download": null, "Upload": null, "Ping": null, "Timestamp": '+str(timestamp)+'}'
 
-print(output)
+#Pull in values from secrets
+load_dotenv()
+username = os.getenv("USER_NAME")
+password = os.getenv("PASSWORD")
+account = os.getenv("ACCOUNT")
+role = os.getenv("ROLE")
+warehouse = os.getenv("WAREHOUSE")
+database = os.getenv("DATABASE")
+schema = os.getenv("SCHEMA")
+table = os.getenv("TABLE")
+
+#make a connection to snowflake
+conn = snowflake.connector.connect(
+    user=username,
+    password=password,
+    account=account,
+    warehouse=warehouse,
+    database=database,
+    schema=schema
+    )
+
+#create a cursor
+cur = conn.cursor()
+
+#try and load the values into the table
+try:
+    #get now
+    uploaded = datetime.datetime.now()
+
+    #Make the insert statement
+    sql = "INSERT INTO "+str(table)+" (JSON, __UPLOADED) VALUES ('"+ output +"', '"+str(uploaded) +"')"
+
+    #execute the sql
+    cur.execute(sql)
+finally:
+    #end the connection
+    cur.close()
