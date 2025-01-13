@@ -1,2 +1,2 @@
-pip3 install -r requirements.txt
+python3.13 -m pip install -r requirements.txt
 python3.13 script.py
