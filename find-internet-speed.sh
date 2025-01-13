@@ -1,6 +1,4 @@
 #!/bin/bash
-source ~/.bashrc
-
 cd /home/pi/InternetSpeedChecker/
-pip3.12 install -r requirements.txt
-python3.12 script.py
+/home/pi/.local/bin/pip3.12 install -r requirements.txt
+/usr/local/bin/python3.12 script.py
