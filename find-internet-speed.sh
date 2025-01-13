@@ -1,2 +1,2 @@
-python3.13 -m pip install -r requirements.txt
-python3.13 script.py
+python3.12.7 -m pip install -r requirements.txt
+python3.12.7 script.py
