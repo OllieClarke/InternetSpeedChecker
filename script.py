@@ -56,11 +56,12 @@ try:
     #get now
     uploaded = datetime.datetime.now()
 
-    #Make the insert statement
-    sql = "INSERT INTO "+str(table)+" (JSON, __UPLOADED) VALUES ('"+ output +"', '"+str(uploaded) +"')"
-
-    #execute the sql
-    cur.execute(sql)
+    #execute the sql binding data for safety
+    cur.execute("INSERT INTO %(table)s(JSON, __UPLOADED) "
+                "VALUES ('%(output)s', '%(uploaded)s')"
+                ,{'table':table,
+                  'output':output,
+                  'uploaded':uploaded})
 finally:
     #end the connection
     cur.close()
