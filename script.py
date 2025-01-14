@@ -56,12 +56,12 @@ try:
     #get now
     uploaded = datetime.datetime.now()
 
+    #make sql with parameter binding
+    sql = "INSERT INTO INTERNET_SPEED_TEST(JSON, __UPLOADED) "
+    sql += "VALUES (%s, %s)"
+    
     #execute the sql binding data for safety
-    cur.execute("INSERT INTO %(table)s(JSON, __UPLOADED) "
-                "VALUES ('%(output)s', '%(uploaded)s')"
-                ,{'table':table,
-                  'output':output,
-                  'uploaded':uploaded})
+    cur.execute(sql,(output, uploaded))
 finally:
     #end the connection
     cur.close()
