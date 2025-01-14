@@ -20,12 +20,12 @@ try:
     timestamp = datetime.datetime.now()
 
     # build json string
-    output = '{"Download": '+str(download_speed)+', "Upload": '+str(upload_speed)+', "Ping": '+str(ping)+', "Timestamp": '+str(timestamp)+'}'
+    output = '{"Download": '+str(download_speed)+', "Upload": '+str(upload_speed)+', "Ping": '+str(ping)+', "Timestamp": "'+str(timestamp)+'"}'
 
 except:
     #If it fails then make a null json, but with a timestamp
     timestamp = datetime.datetime.now()
-    output= '{"Download": null, "Upload": null, "Ping": null, "Timestamp": '+str(timestamp)+'}'
+    output= '{"Download": null, "Upload": null, "Ping": null, "Timestamp": "'+str(timestamp)+'"}'
 
 #Pull in values from secrets
 load_dotenv()
