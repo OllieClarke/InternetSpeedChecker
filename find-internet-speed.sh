@@ -15,6 +15,15 @@ echo installing requirements
 /home/pi/.local/bin/pip3.12 install -r requirements.txt
 
 timestamp #print timestamp
+echo delete old result
+rm speedoutput.txt
+
+timestamp #print timestamp
+#run the speedtest and output to an output.txt file
+echo run cli
+speedtest --secure --json > speedoutput.txt
+
+timestamp #print timestamp
 #run python script
 echo running python script
 /usr/local/bin/python3.12 script.py

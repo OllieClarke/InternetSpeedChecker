@@ -1,31 +1,28 @@
 from dotenv import load_dotenv
 import os
-import speedtest
 import snowflake.connector
 import datetime
+import json
 
-#Use speedtest-cli to find information
-try:
-    #Using Speedtest to find my upload, download and ping
-    #setup speedtest using https
-    st = speedtest.Speedtest(secure=True)
+# Open the file in read mode and read the entire content as a string
+with open('speedoutput.txt', 'r') as file:
+    content = file.read()
 
-    #find the best server
-    st.get_best_server()
+# edit the json to remove server and client 
+# Convert string to dictionary
+data = json.loads(content)
 
-    #Get download/upload/ping/timestamp
-    download_speed = st.download()
-    upload_speed = st.upload()
-    ping = st.results.ping
-    timestamp = datetime.datetime.now()
+# Remove 'server', 'client' and share keys
+data.pop('server', None)
+data.pop('client', None)
+data.pop('share', None)
 
-    # build json string
-    output = '{"Download": '+str(download_speed)+', "Upload": '+str(upload_speed)+', "Ping": '+str(ping)+', "Timestamp": "'+str(timestamp)+'"}'
+# Rename keys to title case
+data = {key.title(): value for key, value in data.items()}
 
-except:
-    #If it fails then make a null json, but with a timestamp
-    timestamp = datetime.datetime.now()
-    output= '{"Download": null, "Upload": null, "Ping": null, "Timestamp": "'+str(timestamp)+'"}'
+# Convert back to string
+output = json.dumps(data, indent=4)
+
 
 #Pull in values from secrets
 load_dotenv()
@@ -65,3 +62,4 @@ try:
 finally:
     #end the connection
     cur.close()
+    
