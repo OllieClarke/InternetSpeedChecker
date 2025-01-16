@@ -12,6 +12,10 @@ with open('speedoutput.txt', 'r') as file:
 # Convert string to dictionary
 data = json.loads(content) 
 
+print(data)
+# Remove 'interface' info
+data.pop('interface', None)
+
 # Rename keys to title case
 data = {key.title(): value for key, value in data.items()}
 
