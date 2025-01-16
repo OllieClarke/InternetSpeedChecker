@@ -10,12 +10,7 @@ with open('speedoutput.txt', 'r') as file:
 
 # edit the json to remove server and client 
 # Convert string to dictionary
-data = json.loads(content)
-
-# Remove 'server', 'client' and share keys
-data.pop('server', None)
-data.pop('client', None)
-data.pop('share', None)
+data = json.loads(content) 
 
 # Rename keys to title case
 data = {key.title(): value for key, value in data.items()}

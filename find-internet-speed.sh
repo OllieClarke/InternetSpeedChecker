@@ -21,7 +21,7 @@ rm speedoutput.txt
 timestamp #print timestamp
 #run the speedtest and output to an output.txt file
 echo run cli
-speedtest --secure --json > speedoutput.txt
+/usr/bin/speedtest -f json > speedoutput.txt
 
 timestamp #print timestamp
 #run python script
