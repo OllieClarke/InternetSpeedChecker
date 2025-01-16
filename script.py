@@ -62,4 +62,3 @@ try:
 finally:
     #end the connection
     cur.close()
-    
