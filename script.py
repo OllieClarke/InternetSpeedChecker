@@ -12,7 +12,6 @@ with open('speedoutput.txt', 'r') as file:
 # Convert string to dictionary
 data = json.loads(content) 
 
-print(data)
 # Remove 'interface' info
 data.pop('interface', None)
 
