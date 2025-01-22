@@ -1,8 +1,10 @@
 from dotenv import load_dotenv
 import os
-import snowflake.connector
 import datetime
 import json
+import logging
+import boto3
+from botocore.exceptions import ClientError
 
 # Open the file in read mode and read the entire content as a string
 with open('speedoutput.txt', 'r') as file:
@@ -21,42 +23,30 @@ data = {key.title(): value for key, value in data.items()}
 # Convert back to string
 output = json.dumps(data, indent=4)
 
+#write the updated j
+
+#create timestamp
+timestamp = datetime.datetime.now().strftime('%Y%m%dT%H%M%S')
+
+#create output filename
+filename = f'speedoutput_{timestamp}.json'
 
 #Pull in values from secrets
 load_dotenv()
-username = os.getenv("USER_NAME")
-password = os.getenv("PASSWORD")
-account = os.getenv("ACCOUNT")
-role = os.getenv("ROLE")
-warehouse = os.getenv("WAREHOUSE")
-database = os.getenv("DATABASE")
-schema = os.getenv("SCHEMA")
-table = os.getenv("TABLE")
+ACCESS_KEY = os.getenv("AWS_ACCESS_KEY")
+ACCESS_SECRET = os.getenv("AWS_SECRET")
+BUCKET_NAME = os.getenv("AWS_BUCKET_NAME")
 
-#make a connection to snowflake
-conn = snowflake.connector.connect(
-    user=username,
-    password=password,
-    account=account,
-    warehouse=warehouse,
-    database=database,
-    schema=schema
+#create a client authenticating with s3
+s3 = boto3.client(
+    's3',
+    aws_access_key_id=ACCESS_KEY,
+    aws_secret_access_key=ACCESS_SECRET
     )
 
-#create a cursor
-cur = conn.cursor()
-
-#try and load the values into the table
 try:
-    #get now
-    uploaded = datetime.datetime.now()
-
-    #make sql with parameter binding
-    sql = "INSERT INTO INTERNET_SPEED_TEST(JSON, __UPLOADED) "
-    sql += "VALUES (%s, %s)"
-    
-    #execute the sql binding data for safety
-    cur.execute(sql,(output, uploaded))
-finally:
-    #end the connection
-    cur.close()
+    #upload the json to s3
+    response = s3.put_object(Bucket=BUCKET_NAME, Key=filename, Body=output)
+    print(response)
+except ClientError as e:
+    logging.error(e)
