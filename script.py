@@ -44,6 +44,7 @@ s3 = boto3.client(
     aws_secret_access_key=ACCESS_SECRET
     )
 
+#try and upload the json, log an error if not
 try:
     #upload the json to s3
     response = s3.put_object(Bucket=BUCKET_NAME, Key=filename, Body=output)
