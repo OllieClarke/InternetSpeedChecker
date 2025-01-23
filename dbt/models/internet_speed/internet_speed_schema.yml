@@ -1,0 +1,100 @@
+version: 2
+
+sources:
+  - name: internet_speed_testing
+    database: [database_name]
+    schema: [schema_name]
+    tables:
+      - name: [table_name]
+        description: my flat's internet speed as a dump from a raspberrypi
+        columns:
+          - name: JSON
+            description: a json body of the speedtest-cli result
+            tests:
+              - not_null
+          - name: __uploaded
+            description: the time that the dump was uploaded
+            tests:
+              - not_null
+              - unique
+        freshness:
+          warn_after:
+            count: 25
+            period: hour
+          error_after:
+            count: 73
+            period: hour
+        loaded_at_field: "convert_timezone('Europe/London', 'UTC', __uploaded)"
+
+models:
+  - name: src__internet_speed_testing
+    description: staged version of the datadump
+    columns:
+      - name: JSON
+        description: Converted json from api call
+        tests:
+          - not_null
+      - name: __uploaded
+        description: timestamp of when the data was pushed to S3
+        tests:
+          - not_null
+          - unique
+
+  - name: parsed_internet_speed_testing
+    description: breaking out the json into its own columns and converting to Mb from bytes
+    columns:
+      - name: download
+        description: the download speed in Mbps
+      - name: upload
+        description: the upload speed in Mbps
+      - name: ping
+        description: the ping high
+      - name: received
+        description: the number of bytes / 1,000,000 received
+      - name: sent
+        description: the number of bytes / 1,000,000 sent
+      - name: timestamp
+        description: when the reading was taken
+        tests:
+          - not_null
+
+  - name: internet_speed_snapshot
+    description: incremental table of my internet speed as a snapshot
+    tests:
+      - freshness:
+          timestamp_field: Timestamp
+          warn_after: { count: 24, period: hour }
+          error_after: { count: 73, period: hour }
+    columns:
+      - name: Upload_Mb
+        description: Upload speed in Mbps rounded to 2 dp
+      - name: Download_Mb
+        description: Download speed in Mbps rounded to 2 dp
+      - name: Ping
+        description: High Ping rounded to 2 dp
+      - name: Timestamp
+        description: Timestamp of reading at the second level
+        tests:
+          - not_null
+      - name: Mb_Received
+        description: Size of packet received in Mb rounded to 2 dp
+      - name: Mb_Sent
+        description: Size of packet sent in Mb rounded to 2 dp
+
+  - name: internet_speed_view
+    description: output view of my internet speed as a snapshot
+    columns:
+      - name: Upload_Mb
+        description: Upload speed in Mbps rounded to 2 dp
+      - name: Download_Mb
+        description: Download speed in Mbps rounded to 2 dp
+      - name: Ping
+        description: High Ping rounded to 2 dp
+      - name: Timestamp
+        description: Timestamp of reading at the second level
+        tests:
+          - not_null
+      - name: Mb_Received
+        description: Size of packet received in Mb rounded to 2 dp
+      - name: Mb_Sent
+        description: Size of packet sent in Mb rounded to 2 dp

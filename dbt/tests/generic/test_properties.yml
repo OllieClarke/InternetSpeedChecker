@@ -1,0 +1,23 @@
+version: 2
+
+macros:
+  - name: test_freshness
+    description: Gives warning or error if the max of a datetime column is more than N periods old
+    docs:
+      show: true
+    arguments:
+      - name: model
+        type: model
+        description: Autofilled by dbt, but the model name
+
+      - name: timestamp_field
+        type: column name or expression
+        description: The datetime field which will be maxed and compared to current time
+
+      - name: warn_after
+        type: numeric and string
+        description: The number and type of periods to warn after. Count is integer number of periods eg count 5, period hour (in {})
+
+      - name: error_after
+        type: numeric and string
+        description: The number and type of periods to error after. Count is integer number of periods eg count 5, period hour (in {})
