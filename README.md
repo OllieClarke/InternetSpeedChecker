@@ -194,3 +194,9 @@ I took advantage of dbt's [auto-exposure](https://docs.getdbt.com/docs/collabora
 
 I also embedded [data health tiles](https://docs.getdbt.com/docs/collaborate/data-tile) in both my dashboards.
 ![data_health_tile_in_dashboard](images/Data%20Health%20Tile.png)
+
+## Final Thoughts
+
+I really enjoyed this project as it's lived in the back of my mind for a few years now. I definitely learnt a lot (especially working in linux), and it was a nice use-case to stretch some other skills I've been sniffing around.
+
+Feel free to get in touch on [bluesky](https://bsky.app/profile/olliehclarke.bsky.social) or [email](mailto:oliver.clarke@theinformationlab.co.uk) if you have any questions, or indeed advice on port forwarding with Virgin Media...
