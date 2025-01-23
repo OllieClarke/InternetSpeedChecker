@@ -112,7 +112,7 @@ Now I've got the raw(ish) json loaded in Snowflake, I used dbt cloud in order to
 
 ![dbt_lineage](/images/dbt%20lineage.png)
 
-#### Staging
+### Staging
 
 I used a [source model](dbt/models/internet_speed/staging/src__internet_speed_testing.sql) to stage my data. I also only wanted to load in successful speedtests, so I filter out any unsuccessful json results.
 
@@ -126,7 +126,7 @@ I then [parse the json](dbt/models/internet_speed/staging/parsed_internet_speed_
 |Received|The size of total downloaded megabytes|
 |Sent|The size of total uploaded megabytes|
 
-#### Marts
+### Marts
 
 I made 2 models based on this parsed data for use by Tableau.
 
@@ -145,7 +145,7 @@ The reason for this duplication was mostly so I could demo the differences and t
 | Mb_Received | The total data downloaded in megabytes rounded to 2 dp |     Float |
 | Mb_Sent     | The total data uploaded in megabytes rounded to 2 dp   |     Float |
 
-#### Tests
+### Tests
 
 I implemented data source freshness tests along with in-built tests of not_null and uniqueness to my source table along with my models.
 
@@ -155,7 +155,7 @@ dbt's freshness checks can only be applied to sources, rather than models, and t
 I took heavy inspiration from this [post I found by Jeremy Yeo](https://gist.github.com/jeremyyeo/67f07c06c4cc6943838e7262728e3f7a)
 and wrote my own [test for model freshness](dbt/tests/generic/freshness.sql).
 
-#### Jobs
+### Jobs
 
 I set up 3 dbt jobs to build my models.
 
