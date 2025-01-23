@@ -23,8 +23,6 @@ data = {key.title(): value for key, value in data.items()}
 # Convert back to string
 output = json.dumps(data, indent=4)
 
-#write the updated j
-
 #create timestamp
 timestamp = datetime.datetime.now().strftime('%Y%m%dT%H%M%S')
 
