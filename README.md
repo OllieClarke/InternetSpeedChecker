@@ -113,7 +113,7 @@ Again I'm using cron syntax to specify that I want this task to run at 09:15 am 
 
 This uses the external stage **OLLIE_INTERNET_SPEED** and file format **json** which I created in order to copy in fresh data from the S3 bucket.
 
-Snowpipe's automatically track which files have been injested, so this will incrementally load only fresh data.
+Snowpipes automatically track which files have been injested, so this will incrementally load only fresh data.
 ![my_s3_bucket](./images/S3%20Bucket.png)
 
 The reason I cast my json into a varchar is that my table had historic data from when I was loading directly into Snowflake, so I had to align my data types (rather than using variant).
