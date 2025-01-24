@@ -78,30 +78,42 @@ Secondly I write any error messages created by the shell script to a err.txt fil
 ## Loading
 
 Once the data is in S3, I can easily pull it into Snowflake.
-Originally I was going to use a [Snowpipe](https://docs.snowflake.com/en/user-guide/data-load-snowpipe-intro) to pull in data from my S3 bucket, but for my purposes I don't need real-time data. It's more cost-efficient for me to have a scheduled task which pulls in the new data.
+Originally I was going to use a [Snowpipe](https://docs.snowflake.com/en/user-guide/data-load-snowpipe-intro) to pull in data from my S3 bucket, but for my purposes I don't need real-time data. I thought it more cost-efficient for me to have a scheduled task which pulls in the new data.
+_However_ tasks are limited in their SQL functionality (or rather COPY INTO statements in tasks are). I only wanted to load in fresh data, and I didn't want to reinvent snowpipe functionality using staging tables and filename logs.
 
-My task is as follows:
+The solution I ended up using was to create a snowpipe, but tell it not to auto-ingest; and then have a daily task to refresh the pipe. This gives me the benefit of Snowpipe's automatic file tracking, with the ability to run the pipe when I want, rather than constantly.
+
+My Snowpipe is as follows
 
 ```sql
-create or replace task input_internet
-    warehouse = <warehouse>
-    schedule = 'USING CRON 15 9 * * 1-5 Europe/London'
-    as
-    COPY INTO <table>
+create or replace pipe internet_speed_input
+    auto_ingest = false
+      as
+      COPY INTO <table>
       FROM (
             select $1::varchar as JSON
             , METADATA$file_last_modified as __uploaded from
             @OLLIE_INTERNET_SPEED
-            where __uploaded > (select max(__uploaded) from <table>)
       )
-       file_format = (format_name = json);
+       file_format = (format_name = json)
+      ;
+```
+
+My task is as follows:
+
+```sql
+create or replace task input_internet_with_snowpipe
+    warehouse = <warehouse>>
+    schedule = 'USING CRON 15 9 * * 1-5 Europe/London'
+    as
+    ALTER PIPE internet_speed_input REFRESH;
 ```
 
 Again I'm using cron syntax to specify that I want this task to run at 09:15 am (London time) Monday through Friday.
 
 This uses the external stage **OLLIE_INTERNET_SPEED** and file format **json** which I created in order to copy in fresh data from the S3 bucket.
 
-I only want to copy in fresh data, so I use the file_last_modified value as my unique key for incremental loading.
+Snowpipe's automatically track which files have been injested, so this will incrementally load only fresh data.
 ![my_s3_bucket](./images/S3%20Bucket.png)
 
 The reason I cast my json into a varchar is that my table had historic data from when I was loading directly into Snowflake, so I had to align my data types (rather than using variant).
