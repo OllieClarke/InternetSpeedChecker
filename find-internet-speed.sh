@@ -20,6 +20,7 @@ if [ ! -f speedoutput.txt ]; then
     echo "no previous output"
 else 
   rm speedoutput.txt
+fi
 
 timestamp #print timestamp
 #run the speedtest and output to an output.txt file
