@@ -12,7 +12,7 @@ cd /home/pi/InternetSpeedChecker/
 timestamp #print timestamp
 #install requirements
 echo installing requirements
-/home/pi/.local/bin/pip3.12 install -r requirements.txt
+python3.12 -m pip install -r requirements.txt
 
 timestamp #print timestamp
 echo delete old result if exists
