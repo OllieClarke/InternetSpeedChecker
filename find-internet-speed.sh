@@ -15,13 +15,16 @@ echo installing requirements
 /home/pi/.local/bin/pip3.12 install -r requirements.txt
 
 timestamp #print timestamp
-echo delete old result
-rm speedoutput.txt
+echo delete old result if exists
+if [ ! -f speedoutput.txt ]; then
+    echo "no previous output"
+else 
+  rm speedoutput.txt
 
 timestamp #print timestamp
 #run the speedtest and output to an output.txt file
 echo run cli
-/usr/bin/speedtest --accept-license --accept-gdpr -f json > speedoutput.txt
+/usr/bin/speedtest --json > speedoutput.txt
 
 timestamp #print timestamp
 #run python script
