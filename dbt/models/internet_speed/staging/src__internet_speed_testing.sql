@@ -5,3 +5,4 @@ select
 from {{ source('internet_speed_testing', 'INTERNET_SPEED_TEST') }}
 where json ILIKE '%"Type": "result"%'
 OR json ILIKE '%"Type":"result"%'
+OR json ILIKE '%"Download"%'
