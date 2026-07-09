@@ -11,8 +11,9 @@ cd /home/pi/InternetSpeedChecker/
 
 timestamp #print timestamp
 #install requirements
-echo installing requirements
-/home/pi/.local/bin/pip3.12 install -r requirements.txt
+# superceded by using a virtual environment and installing requirements there.
+# echo installing requirements
+# /home/pi/.local/bin/pip3.12 install -r requirements.txt
 
 timestamp #print timestamp
 echo delete old result if exists
@@ -25,12 +26,15 @@ fi
 timestamp #print timestamp
 #run the speedtest and output to an output.txt file
 echo run cli
-/usr/local/bin/speedtest --accept-license --accept-gdpr --format=json > speedoutput.txt
+if ! /usr/bin/speedtest --accept-license --accept-gdpr --format=json > speedoutput.txt; then
+  echo "speedtest failed, aborting"
+  exit 1
+fi
 
 timestamp #print timestamp
 #run python script
 echo running python script
-/usr/local/bin/python3.12 script.py
+/home/pi/InternetSpeedChecker/.venv/bin/python script.py
 
 #Add final timestamp
 timestamp #print timestamp
