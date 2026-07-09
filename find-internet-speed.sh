@@ -25,7 +25,7 @@ fi
 timestamp #print timestamp
 #run the speedtest and output to an output.txt file
 echo run cli
-/usr/bin/speedtest --accept-license --accept-gdpr --format=json > speedoutput.txt
+/usr/local/bin/speedtest --accept-license --accept-gdpr --format=json > speedoutput.txt
 
 timestamp #print timestamp
 #run python script
